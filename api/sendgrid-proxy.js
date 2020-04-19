@@ -24,6 +24,8 @@ export default (req, res) => {
       res.status(500).json(error)
     });
   } else {
+    console.log("given proxy token:", proxy_token)
+    console.log("correct proxy token:", process.env.SENDGRID_PROXY_TOKEN)
     res.status(403).send(`Incorrect proxy token`)
   }
 }
