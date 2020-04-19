@@ -1,31 +1,62 @@
+const got = require('got');
+
 export default (req, res) => {
-  const sgMail = require('@sendgrid/mail');
-  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+  if (req.body) {
+    const { sendgridData } = req.body
+  }
 
   const { proxy_token } = req.query
   if (proxy_token && proxy_token === process.env.SENDGRID_PROXY_TOKEN) {
-    console.log("proxy token correct")
-    const msg = {
-      to: 'gklitt@gmail.com',
-      from: 'gklitt@gmail.com',
-      subject: 'Sending with SendGrid is Fun',
-      text: 'and easy to do anywhere, even with Node.js',
-      html: '<strong>and easy to do anywhere, even with Node.js</strong>',
-    };
-    sgMail.send(msg).then(
-      (success) => {
-        res.json(success)
-      }, error => {
-        console.error(error);
+    // const sendgridData = {
+    //     "personalizations": [
+    //         {
+    //         "to": [
+    //             {
+    //               "email": "gklitt@gmail.com"
+    //             }
+    //         ],
+    //         "subject": "Hello, World Test!"
+    //         }
+    //     ],
+    //     "from": {
+    //         "name": "Neighbor Express",
+    //         "email": "noreply@neighborexpress.org"
+    //     },
+    //     "reply_to": {
+    //         "name": "Neighbor Express",
+    //         "email": "neighborexpress@gmail.com"
+    //     },
+    //     "content": [
+    //         {
+    //         "type": "text/plain",
+    //         "value": "Hello, World!"
+    //         }
+    //     ]
+    // }
 
-        if (error.response) {
-          console.error(error.response.body)
+    got.post(
+      "https://api.sendgrid.com/v3/mail/send",
+      {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${process.env.SENDGRID_API_KEY}`
+        },
+        json: sendgridData,
+      }
+    ).then(
+      (response) => {
+        console.log("response", response.body);
+        if (response.statusCode === 202) {
+          res.status(202).send("sent")
+        } else {
+          res.status(500).send(`error, status ${response.statusCode}`)
         }
-      res.status(500).json(error)
-    });
+      },
+      (error) => {
+        res.status(500).send("sendgrid error")
+      }
+    )
   } else {
-    console.log("given proxy token:", proxy_token)
-    console.log("correct proxy token:", process.env.SENDGRID_PROXY_TOKEN)
     res.status(403).send(`Incorrect proxy token`)
   }
 }
