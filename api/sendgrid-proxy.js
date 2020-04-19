@@ -8,7 +8,7 @@ export default (req, res) => {
   );
 
   if (req.body) {
-    const { sendgridData } = req.body
+    const sendgridData = req.body
   } else {
     res.status(500).send("body payload required")
     return;
