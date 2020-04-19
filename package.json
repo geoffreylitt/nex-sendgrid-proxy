@@ -1,0 +1,15 @@
+{
+  "name": "nex-sendgrid-proxy",
+  "version": "1.0.0",
+  "description": "a small sendgrid proxy",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Geoffrey Litt",
+  "license": "MIT",
+  "dependencies": {
+    "@now/node": "^1.5.1",
+    "@sendgrid/mail": "^7.0.1",
+    "now": "^18.0.0"
+  }
+}
