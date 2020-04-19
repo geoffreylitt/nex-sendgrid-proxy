@@ -1,6 +1,12 @@
 const got = require('got');
 
 export default (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader(
+    'Access-Control-Allow-Headers',
+    'Origin, X-Requested-With, Content-Type, Accept'
+  );
+
   if (req.body) {
     const { sendgridData } = req.body
   } else {
