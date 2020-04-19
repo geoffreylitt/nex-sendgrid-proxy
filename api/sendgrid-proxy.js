@@ -3,6 +3,9 @@ const got = require('got');
 export default (req, res) => {
   if (req.body) {
     const { sendgridData } = req.body
+  } else {
+    res.status(500).send("body payload required")
+    return;
   }
 
   const { proxy_token } = req.query
@@ -48,15 +51,19 @@ export default (req, res) => {
         console.log("response", response.body);
         if (response.statusCode === 202) {
           res.status(202).send("sent")
+          return;
         } else {
           res.status(500).send(`error, status ${response.statusCode}`)
+          return;
         }
       },
       (error) => {
         res.status(500).send("sendgrid error")
+        return;
       }
     )
   } else {
     res.status(403).send(`Incorrect proxy token`)
+    return;
   }
 }
