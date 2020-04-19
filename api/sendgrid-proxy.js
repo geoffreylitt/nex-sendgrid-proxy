@@ -7,9 +7,37 @@ export default (req, res) => {
     'Origin, X-Requested-With, Content-Type, Accept'
   );
 
-  if (req.body) {
-    console.log("request body", req.body)
-    const sendgridData = JSON.parse(req.body)
+  let sendgridData;
+
+  if (req.query && req.query["test_data"] === "true") {
+    sendgridData = {
+        "personalizations": [
+            {
+            "to": [
+                {
+                  "email": "gklitt@gmail.com"
+                }
+            ],
+            "subject": "Hello, World Test!"
+            }
+        ],
+        "from": {
+            "name": "Neighbor Express",
+            "email": "noreply@neighborexpress.org"
+        },
+        "reply_to": {
+            "name": "Neighbor Express",
+            "email": "neighborexpress@gmail.com"
+        },
+        "content": [
+            {
+            "type": "text/plain",
+            "value": "Hello, World!"
+            }
+        ]
+    }
+  } else if (req.body) {
+    sendgridData = JSON.parse(req.body)
   } else {
     res.status(500).send("body payload required")
     return;
@@ -17,32 +45,6 @@ export default (req, res) => {
 
   const { proxy_token } = req.query
   if (proxy_token && proxy_token === process.env.SENDGRID_PROXY_TOKEN) {
-    // const sendgridData = {
-    //     "personalizations": [
-    //         {
-    //         "to": [
-    //             {
-    //               "email": "gklitt@gmail.com"
-    //             }
-    //         ],
-    //         "subject": "Hello, World Test!"
-    //         }
-    //     ],
-    //     "from": {
-    //         "name": "Neighbor Express",
-    //         "email": "noreply@neighborexpress.org"
-    //     },
-    //     "reply_to": {
-    //         "name": "Neighbor Express",
-    //         "email": "neighborexpress@gmail.com"
-    //     },
-    //     "content": [
-    //         {
-    //         "type": "text/plain",
-    //         "value": "Hello, World!"
-    //         }
-    //     ]
-    // }
 
     got.post(
       "https://api.sendgrid.com/v3/mail/send",
