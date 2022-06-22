@@ -10,7 +10,7 @@
   "dependencies": {
     "@now/node": "^1.5.1",
     "@sendgrid/mail": "^7.0.1",
-    "got": "^10.7.0",
+    "got": "^11.8.5",
     "now": "^18.0.0"
   }
 }
